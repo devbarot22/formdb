@@ -1,0 +1,130 @@
+.UserDataParentDiv{
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.UserDataDiv{
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 2% 4% 4% 4%; 
+  height: 50%;
+  width: 20%;
+}
+
+.UserData{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding-bottom: 10%;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1.3em;
+  align-items: start;
+}
+
+
+.usersParent{
+  position: absolute;
+  top: -7px;
+  right: 10px;
+  background: white;
+  scroll-behavior: smooth;
+  border-left: 1px solid black;
+  height: 100vh;
+  width: 22%;
+  max-width: 0;
+  overflow: scroll;
+  z-index: 998;
+  transition: max-width 0.2s ease-out;
+}
+
+.usersParent.visible {
+  max-width: 30%; 
+  transition: max-width 0.2s ease-in;
+}
+
+.Users{
+  margin: 40px 0 0 0px;
+  border-bottom: 1px solid black;
+  height: 20%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  cursor: pointer;
+  box-sizing: content-box;
+}
+
+.Users::-webkit-scrollbar {
+  display: none;
+}
+
+.Users > p {
+  margin-left: 10px;
+}
+
+.UsersBtn{
+  background: transparent;
+  border: none;
+  z-index: 999;
+  cursor: pointer;
+  font-size: large;
+}
+
+
+.DeleteBtn, .DeleteBtnn, .UpdateBtn {
+  position: absolute;
+  cursor: pointer;
+  border: 2px solid black;
+  padding: 10px 15px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+.DeleteBtn {
+  left: 10;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.DeleteBtnn {
+  right: 10px;
+}
+
+.UpdateBtn{
+  right: 0;
+  bottom: 0;
+}
+
+
+@media (max-width: 1090px) {
+  .UserDataDiv{
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 4% 4%;
+    height: 40%;
+    width: 20%;
+  }
+}
+
+@media (max-width: 680px) {
+  .UserDataDiv{
+    padding: 2% 2%;
+    height: 40%;
+    width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .UserDataDiv{
+    height: 40%;
+    width: 60%;
+  }
+} 

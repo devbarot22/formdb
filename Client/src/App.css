@@ -1,0 +1,229 @@
+body{
+  overflow: hidden;
+}
+
+h1 {
+  text-align: center;
+}
+
+.error {
+  color: rgb(226, 35, 35);
+  font-size: 0.8em;
+  position: absolute;
+  right: 0;
+}
+
+
+.FormParent {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Form {
+  position: absolute;
+  overflow-y: scroll;
+  width: 23%;
+  height: fit-content; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  position: relative; 
+  border-radius: 10px;
+  border: 2px solid black;
+  padding: 2% 3%;
+}
+
+.FormChildContainer {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.FormChild {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.FormRadio {
+  width: 100%; 
+  /* margin-top: 10px; */
+  display: flex;
+  position: relative;
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.OutRadioInput {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.FormParentt {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+}
+
+.FormInput {
+  width: 100%;
+  padding: 15px; 
+  border-radius: 10px;
+  /* margin-bottom: 10px; */
+  outline: none;
+  font-size: medium;
+  border: none;
+  border-bottom: 1px solid black;
+}
+
+.Label {
+  position: absolute;
+  z-index: 1; 
+  font-size: medium;
+  pointer-events: none;
+  transform: translate(0) scale(1);
+  transform-origin: top left;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  color: #6f81a5;
+  margin-left: 6px;
+}
+
+.FormParentt:focus-within .Label,
+.FormParentt.focused .Label {
+  transform: translate(0, -20px) scale(0.8);
+  color: #4e7fe1;
+  font-size: larger;  
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.SubmitBtn {
+  cursor: pointer;
+  margin-top: 10px; 
+  padding: 10px 15px; 
+  border-radius: 5px;
+  background-color: transparent;
+  border: 2px solid black;
+  color: rgb(53, 50, 50);
+}
+
+.TabX{
+height: 10px;
+}
+
+.SeeU{
+  height: 10px;
+}
+
+
+
+@media (max-width: 1090px) {
+  .Form {
+    width: 35%;
+  }
+}
+
+@media (max-width: 680px) {
+  .Form {
+    width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .Form {
+    width: 80%;
+  }
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+.FormLabel{
+  pointer-events: none;
+  transform: translate(0) scale(1);
+  transform-origin: top left;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  color: #6f81a5;
+  margin-left: 6px;
+  position: absolute;
+  font-size: medium;
+} */
+
+/* .FormInput{
+  background: rgb(235, 234, 234);
+  border-radius: 10px;
+  outline: none;
+  padding: 5%;
+  font-size: medium;
+  padding-right: 10px;
+  padding-left: 5px;
+  border: none;
+  border-bottom: 1px solid black;
+}
+
+.Form:focus-within .FormLabel {
+  transform: translate(0, -20px) scale(0.8);
+  color: #0a53e4;
+} */
