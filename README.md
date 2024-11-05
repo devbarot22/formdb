@@ -1,0 +1,1 @@
+I created a form with React for the frontend, Java Spring Boot for the backend, and MySQL for the database. This form includes all HTTP request methods: POST, GET, PUT, and DELETE. I handle user data through Java controllers, save data using JPA repositories in MySQL, and retrieve the data to display on the UI with React.js.
