@@ -26,7 +26,7 @@ export default function App() {
     gender: "",
   };
 
-  const genderOptions = ["Male", "Female", "Others"];
+  const genderOptions = ["Male", "Female"];
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -81,13 +81,16 @@ export default function App() {
     if (Object.keys(validationErrors).length === 0) {
       console.log("Data before sending:", formData);
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/users/createUser`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -96,6 +99,8 @@ export default function App() {
             state: { labels, formData: data },
           });
         } else {
+          const erors = errors.response(errors);
+          console.log(erors);
           console.error("Failed to submit form");
         }
       } catch (error) {

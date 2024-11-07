@@ -6,11 +6,12 @@ h1 {
   text-align: center;
 }
 
-.error {
-  color: rgb(226, 35, 35);
-  font-size: 0.8em;
+.error{
   position: absolute;
-  right: 0;
+  right: 10px;
+  color: red;
+  font-size: 12px;
+  margin-top: 2px;
 }
 
 
@@ -74,6 +75,7 @@ h1 {
 .FormParentt {
   width: 100%;
   display: flex;
+  position: relative;
   flex-direction: row;
   align-items: center; 
 }

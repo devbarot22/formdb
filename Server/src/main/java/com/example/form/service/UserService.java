@@ -18,7 +18,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deleteUserById(Integer id){
+    public boolean deleteUserById(Long id){
         if(userRepository.existsById(id)){
             userRepository.deleteById(id);
             return true;
