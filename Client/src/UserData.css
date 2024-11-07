@@ -13,7 +13,7 @@
   border: 2px solid black;
   border-radius: 10px;
   padding: 2% 4% 4% 4%; 
-  height: 40%;
+  height: 50%;
   width: 20%;
 }
 
@@ -22,7 +22,7 @@
   width: 100%;
   display: flex;
   position: relative;
-  padding-bottom: 10%;
+  padding-bottom: 15%;
   flex-direction: column;
   justify-content: center;
   font-size: 1.3em;
@@ -46,7 +46,7 @@
 
 .usersParent.visible {
   max-width: 30%; 
-  transition: max-width 0.2s ease-in;
+  transition: 0.2s ease-in;
 }
 
 .Users{
@@ -114,6 +114,7 @@
 
 .SaveBtn{
   background: transparent;
+  cursor: pointer;
   border: 2px solid black;
   height: 4svh;
   width: 4svw;

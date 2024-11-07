@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import UserData from "./UserData";
+import DisplayTable from "./DisplayTable";
 
 export default function App() {
   const labels = ["firstName", "lastName", "age", "phone", "gender"];
@@ -82,7 +83,7 @@ export default function App() {
       console.log("Data before sending:", formData);
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/users/createUser`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/users`,
           {
             method: "POST",
             headers: {
@@ -99,9 +100,8 @@ export default function App() {
             state: { labels, formData: data },
           });
         } else {
-          const erors = errors.response(errors);
-          console.log(erors);
-          console.error("Failed to submit form");
+          const errorData = await response.json();
+          console.log(`Failed to submit form. Status: ${response.status}`, errorData);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -195,6 +195,7 @@ export default function App() {
         }
       />
       <Route path="/user-data/:id" element={<UserData labels={labels} />} />
+      <Route path="/all-users" element={<DisplayTable />} />
     </Routes>
   );
 }

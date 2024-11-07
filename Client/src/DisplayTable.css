@@ -1,0 +1,58 @@
+.AllUsersParent {
+  padding: 20px;
+  max-width: 100vw;
+  overflow-x: auto;
+}
+
+.SearchBox {
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.SearchBox:focus{
+  outline: none;
+  
+}
+
+.UsersTableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.UsersTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.UsersTable th,
+.UsersTable td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.UsersTable th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.TableLabelRow {
+  background-color: #f2f2f2;
+}
+
+.TableBodyRow:hover {
+  background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+  .UsersTable th,
+  .UsersTable td {
+    padding: 8px;
+  }
+}
