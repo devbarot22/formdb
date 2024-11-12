@@ -158,6 +158,7 @@ function UserData() {
 
   const viewFromAllUser = (user) => {
     setSelectedUser(user);
+    navigate(`user-data/${user.Id}`)
   };
 
   return (

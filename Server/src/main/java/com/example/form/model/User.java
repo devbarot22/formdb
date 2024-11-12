@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import javax.validation.constraints.NotEmpty;
 
-
 @Entity
 @Table(name = "users")
 public class User extends UserDto {
@@ -30,6 +29,20 @@ public class User extends UserDto {
 
     @NotBlank(message = "Ohh! You Identify as 'Others'? Am sorry about that because my understanding of gender is only 2")
     private String gender;
+
+    private String imageName;
+
+    public String getImageName(){
+        return imageName;
+    }
+
+    public void setImageName(String imageName){
+        this.imageName = imageName;
+    }
+
+
+
+
 
     public int getId() {
         return id;

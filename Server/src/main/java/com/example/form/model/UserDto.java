@@ -3,27 +3,37 @@ package com.example.form.model;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-
 public class UserDto {
     private int id;
 
-//    @NotBlank
+    //    @NotBlank
     private String firstName;
 
-//    @NotBlank
+    //    @NotBlank
     private String lastName;
 
-//    @NotEmpty(message = "Are you a soul? Because our body has expiry date!")
+    //    @NotEmpty(message = "Are you a soul? Because our body has expiry date!")
     @Min(value = 18, message = "Age should be 18 or above!")
     @Max(value = 100, message = "Age should be realistic!")
     private Integer age;
 
-//    @NotBlank
+    //    @NotBlank
     @Min(value = 10, message = "Enter your number, x")
     private String phone;
 
-//    @NotBlank(message = "Ohh! You Identify as 'Others'? Am sorry about that because my understanding of gender is only 2")
+    //    @NotBlank(message = "Ohh! You Identify as 'Others'? Am sorry about that because my understanding of gender is only 2")
     private String gender;
+
+    private String imageName;
+
+
+    public String getImageName(){
+        return imageName;
+    }
+
+    public void setImageName(String imageName){
+        this.imageName = imageName;
+    }
 
     public int getId() {
         return id;

@@ -8,15 +8,17 @@ import {
 import "./App.css";
 import UserData from "./UserData";
 import DisplayTable from "./DisplayTable";
+import axios from "axios";
 
 export default function App() {
-  const labels = ["firstName", "lastName", "age", "phone", "gender"];
+  const labels = ["firstName", "lastName", "age", "phone", "gender", "image"];
   const inputTypes = {
     firstName: "text",
     lastName: "text",
     age: "number",
     phone: "number",
     gender: "radio",
+    image: "file",
   };
 
   const initialFormData = {
@@ -25,42 +27,30 @@ export default function App() {
     age: "",
     phone: "",
     gender: "",
+    image: null,
   };
 
-  const genderOptions = ["Male", "Female"];
+  const genderOptions = ["Male", "Female", "Others"];
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    age: "",
-    phone: "",
-    gender: "",
-    id: null,
-  });
-
+  const [user, setUser] = useState({});
+  const [formData, setFormData] = useState(initialFormData);
+  const [image, setImage] = useState(formData.image);
   const [errors, setErrors] = useState({});
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "Required";
-    if (!formData.lastName) newErrors.lastName = "Required";
-    if (!formData.age) newErrors.age = "Required";
-    else if (formData.age < 18 || formData.age > 100)
-      newErrors.age = "Must be between 18 and 100";
-    if (!formData.phone) newErrors.phone = "Required";
-    else if (!/^[0-9]{10}$/.test(formData.phone))
-      newErrors.phone = "Invalid phone number";
-    if (!formData.gender) newErrors.gender = "Required";
-    return newErrors;
-  };
-
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, files } = event.target;
+    if (name === "image") {
+      setFormData((prevData) => ({
+        ...prevData,
+        image: files[0],
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleKeyPress = (event) => {
@@ -78,38 +68,62 @@ export default function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
-      console.log("Data before sending:", formData);
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/users`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Form submitted successfully:", data);
-          navigate(`/user-data/${data.id}`, {
+    postMethod(formData);
+  };
+
+  // Creating function to post data on server
+  const postMethod = (data) => {
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_URL}/api/users/createUser`, data)
+      .then((response) => {
+        const data = response.data;
+        console.log(formData.image);
+        if (formData.image) {
+          uploadPostImage(formData.image, data.id)
+            .then(() => {
+              console.log(formData.image);
+            })
+            .catch((error) => {
+              console.log("Error in Uploading Image !! ");
+              console.error(error);
+              // console.log(error.response.data);
+            });
+        }
+
+        if (!errors.isError) {
+          console.log(
+            "User Registered Successfully! User ID: " + response.data.id
+          );
+          navigate(`user-data/${response.data.id}`, {
             state: { labels, formData: data },
           });
-        } else {
-          const errorData = await response.json();
-          console.log(`Failed to submit form. Status: ${response.status}`, errorData);
+          setUser({});
+          setFormData(initialFormData);
         }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    } else {
-      setErrors(validationErrors);
-    }
-    setFormData(initialFormData);
+      })
+      .catch((error) => {
+        console.log("Error! Something went wrong");
+        console.log(error);
+
+        if (error.response && error.response.data) {
+          setErrors({
+            errors: error.response.data,
+            isError: true,
+          });
+        }
+      });
+  };
+
+  const uploadPostImage = async (image, id) => {
+    let formData = new FormData();
+    formData.append("image", image);
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/users/image/${id}`,
+      formData
+    );
+    return response.data;
   };
 
   return (
@@ -122,7 +136,7 @@ export default function App() {
             <form className="Form" onSubmit={handleSubmit}>
               <div className="FormChildContainer">
                 {labels.map((label) => {
-                  const isFocused = formData[name] ? "focused" : "";
+                  const isFocused = formData[label] ? "focused" : "";
                   return (
                     <div className="FormChild" key={label}>
                       {inputTypes[label] === "radio" ? (
@@ -144,6 +158,28 @@ export default function App() {
                               </label>
                             ))}
                           </div>
+                          {errors[label] && (
+                            <div className="error">{errors[label]}</div>
+                          )}
+                        </div>
+                      ) : inputTypes[label] === "file" ? (
+                        <div className="FormFile">
+                          <label
+                            htmlFor={label}
+                            className="FileLabel"
+                            style={{ visibility: "hidden" }}>
+                            {label.charAt(0).toUpperCase() + label.slice(1)}
+                          </label>
+                          <input
+                            type="file"
+                            name={label}
+                            accept="image/*"
+                            className="FormInputFile"
+                            onChange={handleChange}
+                          />
+                          {errors[label] && (
+                            <div className="error">{errors[label]}</div>
+                          )}
                         </div>
                       ) : (
                         <div className={`FormParentt ${isFocused}`}>
@@ -180,9 +216,11 @@ export default function App() {
                                 : undefined
                             }
                           />
-                          {errors[label] && (
-                            <div className="error">{errors[label]}</div>
-                          )}
+                          <div className="error-container">
+                            {errors[label] && (
+                              <div className="error">{errors[label]}</div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
