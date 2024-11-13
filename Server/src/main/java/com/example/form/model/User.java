@@ -30,6 +30,7 @@ public class User extends UserDto {
     @NotBlank(message = "Ohh! You Identify as 'Others'? Am sorry about that because my understanding of gender is only 2")
     private String gender;
 
+
     private String imageName;
 
     public String getImageName(){

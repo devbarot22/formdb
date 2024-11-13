@@ -31,24 +31,24 @@ public class UserController {
     @Autowired
     private FileService fileService;
 
-    @Value("images")
+    @Value("{images.path}")
     private String path;
 
 
     //Creating User Method
     @PostMapping("/createUser")
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user) {
-        UserDto createUser = this.userService.saveUser(user);
-        System.out.println();
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+        UserDto createUser = this.userService.saveUser(userDto);
         return new ResponseEntity<>(createUser, HttpStatus.CREATED);
     }
 
     //This method is created to get all users the database users
-    @GetMapping()
+    @GetMapping("/all-users")
     public ResponseEntity<List<UserDto>> getAllUsers(
-//            RequestParam("")
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
     ) {
-        return ResponseEntity.ok(this.userService.getAllUsers());
+        return ResponseEntity.ok(this.userService.getAllUsers(pageNumber, pageSize));
     }
 
     //This method is created to get user by its id
@@ -102,7 +102,7 @@ public class UserController {
     public void getUserImage(@PathVariable("imageName") String imageName, HttpServletResponse response) throws IOException {
 
         InputStream resource = this.fileService.getResource(path, imageName);
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        response.setContentType(MediaType.IMAGE_PNG_VALUE);
         StreamUtils.copy(resource, response.getOutputStream());
     }
 

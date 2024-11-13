@@ -173,7 +173,7 @@ export default function App() {
                           <input
                             type="file"
                             name={label}
-                            accept="image/*"
+                            accept="image/png, image/jpeg"
                             className="FormInputFile"
                             onChange={handleChange}
                           />

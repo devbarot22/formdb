@@ -31,7 +31,7 @@ function UserData() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -158,7 +158,7 @@ function UserData() {
 
   const viewFromAllUser = (user) => {
     setSelectedUser(user);
-    navigate(`user-data/${user.Id}`)
+    navigate(`/user-data/${user.id}`, { replace: true });
   };
 
   return (
@@ -196,18 +196,21 @@ function UserData() {
             )}
           </div>
         ) : (
+          selectedUser && selectedUser.imageName && (
           <img
-            src={MultipleUserSvg}
+            src=  {`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
             alt="SeeAllUserIcon"
             style={{
               position: "absolute",
-              height: "20px",
+              width: "50px",
+              height: "50px",
               right: "10px",
               top: "-5px",
               background: "gray",
-              borderRadius: "10vw",
+              borderRadius: "50%",
             }}
           />
+          )
         )}
       </button>
       <img
@@ -297,6 +300,9 @@ function UserData() {
                           )}
                         </div>
                       );
+                      
+
+
                     })}
                     <button className="SaveBtn" type="submit">
                       Save
@@ -308,6 +314,13 @@ function UserData() {
           ) : (
             <div className="UserDataDiv">
               <div className="UserData">
+                {selectedUser.imageName && (
+                  <img
+                    src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
+                    alt={selectedUser.imageName}
+                    style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "50%", position: "absolute", right: "-50px", top: "-20px" }}
+                  />
+                )}
                 <p>First Name: {selectedUser.firstName}</p>
                 <p>Last Name: {selectedUser.lastName}</p>
                 <p>Age: {selectedUser.age}</p>

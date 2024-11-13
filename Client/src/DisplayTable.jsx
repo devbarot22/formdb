@@ -18,7 +18,7 @@ export default function DisplayTable() {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -81,11 +81,13 @@ export default function DisplayTable() {
                   {labels.map((label) => (
                     <td key={label}>
                       {label === "imageName" ? (
-                        <img
-                          src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${user.imageName}`}
-                          alt={user.imageName}
-                          style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                        />
+                        <div className="ImageContainer">
+                          <img
+                            src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${user.imageName}`}
+                            alt={user.imageName}
+                            className="ImagesInTable"
+                          />
+                        </div>
                       ) : (
                         user[label]
                       )}

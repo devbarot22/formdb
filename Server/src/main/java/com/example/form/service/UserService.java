@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     void deleteUserById(Long id);
     UserDto saveUser(UserDto user);
-    List<UserDto> getAllUsers();
+    List<UserDto> getAllUsers(Integer pageNumber, Integer pageSize);
     UserDto getUserById(Long id);
     UserDto updateUser(UserDto user, Long id);
 

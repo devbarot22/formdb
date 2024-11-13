@@ -7,6 +7,7 @@ import com.example.form.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +40,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers(){
-        List<User> users = this.userRepository.findAll();
-        List<UserDto> userDtos = users.stream().map(this::convertToDto).collect(Collectors.toList());
-        return userDtos;
+    public List<UserDto> getAllUsers(
+            Integer pageNumber, Integer pageSize
+    ){
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<User> userPost = this.userRepository.findAll(pageable);
+        List<User> allUsers = userPost.getContent();
+
+        return allUsers.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
