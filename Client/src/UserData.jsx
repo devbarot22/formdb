@@ -17,14 +17,16 @@ function UserData() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({});
+  const [image, setImage] = useState(null);
 
-  const labels = ["firstName", "lastName", "age", "phone", "gender"];
+  const labels = ["firstName", "lastName", "age", "phone", "gender", "image"];
   const inputTypes = {
     firstName: "text",
     lastName: "text",
     age: "number",
     phone: "number",
     gender: "radio",
+    image: "file",
   };
 
   const genderOptions = ["Male", "Female"];
@@ -108,8 +110,12 @@ function UserData() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData({ ...editFormData, [name]: value });
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setImage(files[0]);
+    } else {
+      setEditFormData({ ...editFormData, [name]: value });
+    }
   };
 
   const updateUser = async (userId) => {
@@ -129,9 +135,33 @@ function UserData() {
         setAllUsers(updatedUsers);
         setSelectedUser(updatedUser);
         setIsEditing(false);
+
+        if (image) {
+          await uploadImage(userId);
+        }
       } else {
         const errorData = await response.json();
         console.log(`Failed to update user. Status: ${response.status}`, errorData);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const uploadImage = async (userId) => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/image/update/${userId}`, {
+        method: "PUT",
+        body: formData,
+      });
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setSelectedUser(updatedUser);
+      } else {
+        console.error(`Failed to upload image. Status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -179,7 +209,7 @@ function UserData() {
                 top: "0",
               }}
             />
-            {isTableViewVisible && (
+            {isTableViewVisible && selectedUser && (
               <img
                 src={TableView}
                 alt="Table View Svg"
@@ -197,19 +227,19 @@ function UserData() {
           </div>
         ) : (
           selectedUser && selectedUser.imageName && (
-          <img
-            src=  {`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
-            alt="SeeAllUserIcon"
-            style={{
-              position: "absolute",
-              width: "50px",
-              height: "50px",
-              right: "10px",
-              top: "-5px",
-              background: "gray",
-              borderRadius: "50%",
-            }}
-          />
+            <img
+              src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
+              alt="SeeAllUserIcon"
+              style={{
+                position: "absolute",
+                width: "50px",
+                height: "50px",
+                right: "10px",
+                top: "-5px",
+                background: "gray",
+                borderRadius: "50%",
+              }}
+            />
           )
         )}
       </button>
@@ -259,6 +289,19 @@ function UserData() {
                                 ))}
                               </div>
                             </div>
+                          ) : inputTypes[label] === "file" ? (
+                            <div className="FormFile">
+                              <label htmlFor={label} className="Label">
+                                {label.charAt(0).toUpperCase() + label.slice(1)}
+                              </label>
+                              <input
+                                type="file"
+                                name={label}
+                                accept="image/png, image/jpeg"
+                                className="FormInputFile"
+                                onChange={handleInputChange}
+                              />
+                            </div>
                           ) : (
                             <div className={`FormParentt ${isFocused}`}>
                               <label htmlFor={label} className="Label">
@@ -300,9 +343,6 @@ function UserData() {
                           )}
                         </div>
                       );
-                      
-
-
                     })}
                     <button className="SaveBtn" type="submit">
                       Save
@@ -313,14 +353,7 @@ function UserData() {
             </div>
           ) : (
             <div className="UserDataDiv">
-              <div className="UserData">
-                {selectedUser.imageName && (
-                  <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
-                    alt={selectedUser.imageName}
-                    style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "50%", position: "absolute", right: "-50px", top: "-20px" }}
-                  />
-                )}
+              <div className="UserData">  
                 <p>First Name: {selectedUser.firstName}</p>
                 <p>Last Name: {selectedUser.lastName}</p>
                 <p>Age: {selectedUser.age}</p>
