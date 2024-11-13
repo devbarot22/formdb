@@ -31,7 +31,7 @@ public class UserController {
     @Autowired
     private FileService fileService;
 
-    @Value("project.images")
+    @Value("images")
     private String path;
 
 
@@ -45,7 +45,9 @@ public class UserController {
 
     //This method is created to get all users the database users
     @GetMapping()
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers(
+//            RequestParam("")
+    ) {
         return ResponseEntity.ok(this.userService.getAllUsers());
     }
 

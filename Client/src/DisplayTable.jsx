@@ -10,7 +10,7 @@ export default function DisplayTable() {
   const location = useLocation();
   const { selectedUserId } = location.state || {};
 
-  const labels = ["firstName", "lastName", "age", "phone", "gender"];
+  const labels = ["firstName", "lastName", "age", "phone", "gender", "imageName"];
 
   const getBackFromTable = () => {
     navigate(`/user-data/${selectedUserId}`);
@@ -45,7 +45,7 @@ export default function DisplayTable() {
 
   const filteredUsers = allUsers.filter((user) =>
     labels.some((label) =>
-      user[label].toString().toLowerCase().startsWith(searchTerm.toLowerCase())
+      user[label]?.toString().toLowerCase().startsWith(searchTerm.toLowerCase())
     )
   );
 
@@ -79,7 +79,17 @@ export default function DisplayTable() {
               {filteredUsers.map((user) => (
                 <tr key={user.id} onClick={() => viewUserDetails(user)} style={{ cursor: "pointer" }} className="TableBodyRow">
                   {labels.map((label) => (
-                    <td key={label}>{user[label]}</td>
+                    <td key={label}>
+                      {label === "imageName" ? (
+                        <img
+                          src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${user.imageName}`}
+                          alt={user.imageName}
+                          style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                        />
+                      ) : (
+                        user[label]
+                      )}
+                    </td>
                   ))}
                 </tr>
               ))}
