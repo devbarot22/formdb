@@ -7,7 +7,7 @@ import CrossSvg from "./public/cross-svgrepo-com.svg";
 import TableView from "./public/table-column-solid-svgrepo-com.svg";
 import "./App.css";
 
-function UserData() {
+  function UserData() {
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -193,33 +193,35 @@ function UserData() {
 
   return (
     <div className="UserDataParentDiv">
-      <button
+      <div
         className="UsersBtn"
-        style={{ position: "absolute", top: "10px", right: "20px" }}
+        style={{ position: "absolute", top: "0", right: "10px" }}
         onClick={toggleUsersVisibility}>
         {isUsersVisible ? (
-          <div style={{ width: "20vw", position: "relative" }}>
+          <div style={{ width: "22vw", position: "relative", height: "5vh", backgroundColor: "white", top: "-10px", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <img
               src={CrossSvg}
               alt="TabClosingIcon"
               style={{
                 position: "absolute",
-                height: "10px",
+                height: "14px",
                 right: "14px",
-                top: "0",
+                // top: "0",
               }}
-            />
+              />
             {isTableViewVisible && selectedUser && (
               <img
                 src={TableView}
                 alt="Table View Svg"
                 style={{
+                  paddingLeft: "10px", 
                   position: "absolute",
                   height: "20px",
                   left: "0",
-                  top: "-5px",
+                  // top: "-5px",
                   zIndex: "999",
                   transition: "0.2s ease-in",
+                  // border: "2px solid black",
                 }}
                 onClick={() => navigate("/all-users", { state: { selectedUserId: selectedUser.id } })}
               />
@@ -237,12 +239,13 @@ function UserData() {
                 right: "10px",
                 top: "-5px",
                 background: "gray",
+                border: "2px solid grey",
                 borderRadius: "50%",
               }}
             />
           )
         )}
-      </button>
+      </div>
       <img
         src={AddUserSvg}
         alt="AddUserSvg"
@@ -261,7 +264,7 @@ function UserData() {
         <>
           {isEditing ? (
             <div className="FormParent">
-              <h1>User Data</h1>
+              <h1>Update Data</h1>
               <div className="Form">
                 <div className="FormChildContainer">
                   <form className="UpdateForm" onSubmit={(e) => { e.preventDefault(); updateUser(selectedUser.id); }}>
@@ -291,7 +294,7 @@ function UserData() {
                             </div>
                           ) : inputTypes[label] === "file" ? (
                             <div className="FormFile">
-                              <label htmlFor={label} className="Label">
+                              <label htmlFor={label} className="Label" style={{visibility: "hidden", marginTop: "10px"}}>
                                 {label.charAt(0).toUpperCase() + label.slice(1)}
                               </label>
                               <input

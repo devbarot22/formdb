@@ -19,7 +19,7 @@
 
 .UsersTableContainer {
   width: 100%;
-  max-height: 400px; /* Set a max height for the table container */
+  max-height: 500px; /* Set a max height for the table container */
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
@@ -73,10 +73,10 @@
 }
 
 .ImageContainer:hover .ImagesInTable {
-  transform: scale(4) translateX(-30px);
+  transform: scale(2) translateX(-30px);
   transition: transform 0.4s ease-in-out;
   z-index: 999;
-  position: absolute;
+  position: absolute; /* Change to fixed to move above the table */
 }
 
 .ImagesInTable {
@@ -108,4 +108,4 @@
 
 .Pagination button:hover:not(.active) {
   background-color: #ddd;
-}
+} 

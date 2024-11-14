@@ -83,6 +83,7 @@ export default function App() {
           uploadPostImage(formData.image, data.id)
             .then(() => {
               console.log(formData.image);
+              console.log("SUbmitting form data!");
             })
             .catch((error) => {
               console.log("Error in Uploading Image !! ");
@@ -91,6 +92,8 @@ export default function App() {
             });
         }
 
+        console.log("At the navigate");
+        
         if (!errors.isError) {
           console.log(
             "User Registered Successfully! User ID: " + response.data.id
@@ -98,6 +101,8 @@ export default function App() {
           navigate(`user-data/${response.data.id}`, {
             state: { labels, formData: data },
           });
+          console.log("Navigated to user-data");
+          
           setUser({});
           setFormData(initialFormData);
         }
