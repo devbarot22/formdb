@@ -3,6 +3,7 @@ package com.example.form.controller;
 import com.example.form.ExceptionHandler.ApiResponse;
 import com.example.form.Utils.ImageValidator;
 import com.example.form.model.UserDto;
+import com.example.form.payloads.PostResponse;
 import com.example.form.service.FileService;
 import com.example.form.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class UserController {
     @Autowired
     private FileService fileService;
 
-    @Value("{images.path}")
+    @Value("images")
     private String path;
 
 
@@ -43,12 +44,21 @@ public class UserController {
     }
 
     //This method is created to get all users the database users
-    @GetMapping("/all-users")
-    public ResponseEntity<List<UserDto>> getAllUsers(
+    @GetMapping("/all-users-Paging")
+    public ResponseEntity<PostResponse> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
     ) {
-        return ResponseEntity.ok(this.userService.getAllUsers(pageNumber, pageSize));
+
+        PostResponse postResponse = this.userService.getAllUsers(pageNumber, pageSize);
+        return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-users")
+    public ResponseEntity<List<UserDto>> getAllUserData(){
+        List<UserDto> userDto = this.userService.getAllUsersData();
+
+        return new ResponseEntity<List<UserDto>>(userDto, HttpStatus.OK);
     }
 
     //This method is created to get user by its id

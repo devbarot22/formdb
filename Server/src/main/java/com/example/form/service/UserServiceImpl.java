@@ -3,6 +3,7 @@ package com.example.form.service;
 import com.example.form.ExceptionHandler.ResourceNotFoundException;
 import com.example.form.model.User;
 import com.example.form.model.UserDto;
+import com.example.form.payloads.PostResponse;
 import com.example.form.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,11 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserDto userDto) {
         System.out.println("Saving User: " + userDto);
         User user = this.convertToEntity(userDto);
-        User savedUser = this.userRepository.save(user);
-        return savedUser;
+        return this.userRepository.save(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers(
+    public PostResponse getAllUsers(
             Integer pageNumber, Integer pageSize
     ){
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -48,7 +48,24 @@ public class UserServiceImpl implements UserService {
         Page<User> userPost = this.userRepository.findAll(pageable);
         List<User> allUsers = userPost.getContent();
 
-        return allUsers.stream().map(this::convertToDto).collect(Collectors.toList());
+        List<UserDto> userDto =  allUsers.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(userDto);
+        postResponse.setPageNumber(userPost.getNumber());
+        postResponse.setPageSize(userPost.getSize());
+        postResponse.setTotalElements(userPost.getTotalElements());
+
+        postResponse.setTotalPages(userPost.getTotalPages());
+        postResponse.setLastPage(userPost.isLast());
+
+        return postResponse;
+    }
+
+    public List<UserDto> getAllUsersData(){
+        List<User> users = this.userRepository.findAll();
+        return users.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
