@@ -18,6 +18,7 @@ import "./App.css";
   const [isEditing, setIsEditing] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   const [image, setImage] = useState(null);
+  const [imageName, setImageName] = useState("");
 
   const labels = ["firstName", "lastName", "age", "phone", "gender", "image"];
   const inputTypes = {
@@ -29,7 +30,7 @@ import "./App.css";
     image: "file",
   };
 
-  const genderOptions = ["Male", "Female"];
+  const genderOptions = ["Male", "Female", "Others"];
 
   const fetchData = async () => {
     try {
@@ -160,6 +161,7 @@ import "./App.css";
       if (response.ok) {
         const updatedUser = await response.json();
         setSelectedUser(updatedUser);
+        setImageName(updateUser.imageName || "");
       } else {
         console.error(`Failed to upload image. Status: ${response.status}`);
       }
@@ -167,6 +169,12 @@ import "./App.css";
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    if(selectedUser && !selectedUser.imageName) {
+      fetchUserById(selectedUser.id);
+    }
+  }, [selectedUser])
 
   useEffect(() => {
     fetchData();

@@ -93,7 +93,7 @@ export default function App() {
         }
 
         console.log("At the navigate");
-        
+
         if (!errors.isError) {
           console.log(
             "User Registered Successfully! User ID: " + response.data.id
@@ -102,7 +102,7 @@ export default function App() {
             state: { labels, formData: data },
           });
           console.log("Navigated to user-data");
-          
+
           setUser({});
           setFormData(initialFormData);
         }
@@ -137,7 +137,7 @@ export default function App() {
         path="/"
         element={
           <div className="FormParent">
-            <h1>Form</h1>
+            <h1>Sign Up</h1>
             <form className="Form" onSubmit={handleSubmit}>
               <div className="FormChildContainer">
                 {labels.map((label) => {
