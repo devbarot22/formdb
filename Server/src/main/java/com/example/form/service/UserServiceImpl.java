@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public void deleteUserById(Long id){
+    public void deleteUserById(Long id) {
         this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
         this.userRepository.deleteById(id);
     }
@@ -41,14 +42,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PostResponse getAllUsers(
-            Integer pageNumber, Integer pageSize
-    ){
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            Integer pageNumber, Integer pageSize, String sortBy, String sortOrder
+    ) {
+        Sort sort = (sortOrder.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<User> userPost = this.userRepository.findAll(pageable);
         List<User> allUsers = userPost.getContent();
 
-        List<UserDto> userDto =  allUsers.stream().map(this::convertToDto).collect(Collectors.toList());
+        List<UserDto> userDto = allUsers.stream().map(this::convertToDto).collect(Collectors.toList());
 
         PostResponse postResponse = new PostResponse();
 
@@ -63,13 +68,13 @@ public class UserServiceImpl implements UserService {
         return postResponse;
     }
 
-    public List<UserDto> getAllUsersData(){
+    public List<UserDto> getAllUsersData() {
         List<User> users = this.userRepository.findAll();
         return users.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUserById(Long id){
+    public UserDto getUserById(Long id) {
         return this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
     }
 
@@ -88,11 +93,17 @@ public class UserServiceImpl implements UserService {
         return this.convertToDto(updatedUser);
     }
 
-    private User convertToEntity(UserDto userDto){
+//    @Override
+//    public List<UserDto> searchUser(String keyword){
+//        List<User> users = this.userRepository.findByTitleContaining(keyword);
+//        return users.stream().map((post) -> this.modelMapper.map(post, UserDto.class)).toList();
+//    }
+
+    private User convertToEntity(UserDto userDto) {
         return this.modelMapper.map(userDto, User.class);
     }
 
-    private UserDto convertToDto(User user){
+    private UserDto convertToDto(User user) {
         return this.modelMapper.map(user, UserDto.class);
     }
 

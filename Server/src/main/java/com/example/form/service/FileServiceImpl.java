@@ -13,12 +13,13 @@ import java.util.UUID;
 
         @Override
         public String uploadImage(String path, MultipartFile file) throws IOException {
-
+    
 //         File Name
             String fileName = file.getOriginalFilename();
 
 //        random name generate file
             String randomID = UUID.randomUUID().toString();
+            assert fileName != null;
             String fileName1 = randomID.concat(fileName.substring(fileName.lastIndexOf(".")));
 
 //        Full path
@@ -39,10 +40,9 @@ import java.util.UUID;
         @Override
         public InputStream getResource(String path, String fileName) throws FileNotFoundException {
             String filePath = path + File.separator + fileName;
-            InputStream inputStream = new FileInputStream(filePath);
 
 //        db logic to return inputStream
-            return inputStream;
+            return new FileInputStream(filePath);
         }
 
 

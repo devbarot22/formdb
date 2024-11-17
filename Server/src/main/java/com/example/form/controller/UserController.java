@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -44,21 +46,23 @@ public class UserController {
     }
 
     //This method is created to get all users the database users
-    @GetMapping("/all-users-Paging")
+    @GetMapping("/all-users-paging")
     public ResponseEntity<PostResponse> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(value= "sortOrder", defaultValue = "asc", required = false) String sortOrder
     ) {
 
-        PostResponse postResponse = this.userService.getAllUsers(pageNumber, pageSize);
-        return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
+        PostResponse postResponse = this.userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
+        return new ResponseEntity<PostResponse>(postResponse, OK);
     }
 
     @GetMapping("/all-users")
     public ResponseEntity<List<UserDto>> getAllUserData(){
         List<UserDto> userDto = this.userService.getAllUsersData();
 
-        return new ResponseEntity<List<UserDto>>(userDto, HttpStatus.OK);
+        return new ResponseEntity<List<UserDto>>(userDto, OK);
     }
 
     //This method is created to get user by its id
@@ -78,8 +82,18 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable("id") Long id) {
         this.userService.deleteUserById(id);
-        return new ResponseEntity<>(new ApiResponse("User has been deleted", true), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("User has been deleted", true), OK);
     }
+
+//    @GetMapping("/search/{keywords}")
+//    //This method is created to search from all users
+//    public ResponseEntity<List<UserDto>> searchUserByTitle(
+//            @PathVariable("keywords") String keywords
+//    )
+//    {
+//        List<UserDto> result = this.userService.searchUser(keywords);
+//        return new ResponseEntity<List<UserDto>>(result, HttpStatus.OK);
+//    }
 
 
 
@@ -104,7 +118,7 @@ public class UserController {
         String fileName = this.fileService.uploadImage(path, image);
         userDto.setImageName(fileName);
         UserDto updatedUser = this.userService.updateUser(userDto, id);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser, OK);
     }
 
     //    Method to serve files
@@ -142,7 +156,7 @@ public class UserController {
         UserDto updatedUser = this.userService.updateUser(userDto, id);
 
         // Return the updated user information
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser, OK);
     }
 
     //    Method to delete file
@@ -167,7 +181,7 @@ public class UserController {
             this.userService.updateUser(userDto, id);
 
             // Return a response indicating success
-            return new ResponseEntity<>(new ApiResponse("User image deleted successfully", true), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("User image deleted successfully", true), OK);
         } else {
 
             // Return a response indicating failed
