@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
         postResponse.setPageNumber(userPost.getNumber());
         postResponse.setPageSize(userPost.getSize());
         postResponse.setTotalElements(userPost.getTotalElements());
-
         postResponse.setTotalPages(userPost.getTotalPages());
         postResponse.setLastPage(userPost.isLast());
 
@@ -87,6 +86,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setAge(user.getAge());
         existingUser.setPhone(user.getPhone());
         existingUser.setGender(user.getGender());
+        existingUser.setPassword(user.getPassword());
 
         User updatedUser = this.userRepository.save(existingUser);
 
