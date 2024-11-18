@@ -26,6 +26,15 @@ public class UserDto {
 
     private String imageName;
 
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getImageName(){
         return imageName;

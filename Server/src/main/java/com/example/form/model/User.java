@@ -41,9 +41,8 @@ public class User extends UserDto {
         this.imageName = imageName;
     }
 
-
-
-
+    @NotEmpty(message = "Nanakdo message")
+    private String password;
 
     public int getId() {
         return id;
@@ -51,6 +50,14 @@ public class User extends UserDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
