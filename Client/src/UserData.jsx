@@ -5,9 +5,11 @@ import AddUserSvg from "./public/person-plus-fill-svgrepo-com.svg";
 import MultipleUserSvg from "./public/multiple-user-profile-images-svgrepo-com.svg";
 import CrossSvg from "./public/cross-svgrepo-com.svg";
 import TableView from "./public/table-column-solid-svgrepo-com.svg";
+import ClosedEye from "./public/icons8-closed-eye-96.png";
+import OpenedEye from "./public/icons8-eye-96.png";
 import "./App.css";
 
-  function UserData() {
+function UserData() {
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,13 +21,23 @@ import "./App.css";
   const [editFormData, setEditFormData] = useState({});
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const labels = ["firstName", "lastName", "age", "phone", "gender", "image"];
+  const labels = [
+    "firstName",
+    "lastName",
+    "age",
+    "phone",
+    "password",
+    "gender",
+    "image",
+  ];
   const inputTypes = {
     firstName: "text",
     lastName: "text",
     age: "number",
     phone: "number",
+    password: "password",
     gender: "radio",
     image: "file",
   };
@@ -34,12 +46,15 @@ import "./App.css";
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setAllUsers(data);
@@ -54,12 +69,15 @@ import "./App.css";
 
   const fetchUserById = async (userId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setSelectedUser(data);
@@ -73,9 +91,12 @@ import "./App.css";
 
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
         const updatedUsers = allUsers.filter((user) => user.id !== userId);
         setAllUsers(updatedUsers);
@@ -121,13 +142,16 @@ import "./App.css";
 
   const updateUser = async (userId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editFormData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editFormData),
+        }
+      );
       if (response.ok) {
         const updatedUser = await response.json();
         const updatedUsers = allUsers.map((user) =>
@@ -142,7 +166,10 @@ import "./App.css";
         }
       } else {
         const errorData = await response.json();
-        console.log(`Failed to update user. Status: ${response.status}`, errorData);
+        console.log(
+          `Failed to update user. Status: ${response.status}`,
+          errorData
+        );
       }
     } catch (error) {
       console.error("Error:", error);
@@ -154,10 +181,13 @@ import "./App.css";
     formData.append("image", image);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/image/update/${userId}`, {
-        method: "PUT",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/image/update/${userId}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
       if (response.ok) {
         const updatedUser = await response.json();
         setSelectedUser(updatedUser);
@@ -171,10 +201,10 @@ import "./App.css";
   };
 
   useEffect(() => {
-    if(selectedUser && !selectedUser.imageName) {
+    if (selectedUser && !selectedUser.imageName) {
       fetchUserById(selectedUser.id);
     }
-  }, [selectedUser])
+  }, [selectedUser]);
 
   useEffect(() => {
     fetchData();
@@ -199,6 +229,11 @@ import "./App.css";
     navigate(`/user-data/${user.id}`, { replace: true });
   };
 
+  
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className="UserDataParentDiv">
       <div
@@ -206,7 +241,18 @@ import "./App.css";
         style={{ position: "absolute", top: "0", right: "10px" }}
         onClick={toggleUsersVisibility}>
         {isUsersVisible ? (
-          <div style={{ width: "22vw", position: "relative", height: "5vh", backgroundColor: "white", top: "-10px", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          <div
+            style={{
+              width: "22vw",
+              position: "relative",
+              height: "5vh",
+              backgroundColor: "white",
+              top: "-10px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
             <img
               src={CrossSvg}
               alt="TabClosingIcon"
@@ -216,13 +262,13 @@ import "./App.css";
                 right: "14px",
                 // top: "0",
               }}
-              />
+            />
             {isTableViewVisible && selectedUser && (
               <img
                 src={TableView}
                 alt="Table View Svg"
                 style={{
-                  paddingLeft: "10px", 
+                  paddingLeft: "10px",
                   position: "absolute",
                   height: "20px",
                   left: "0",
@@ -231,14 +277,21 @@ import "./App.css";
                   transition: "0.2s ease-in",
                   // border: "2px solid black",
                 }}
-                onClick={() => navigate("/all-users", { state: { selectedUserId: selectedUser.id } })}
+                onClick={() =>
+                  navigate("/all-users", {
+                    state: { selectedUserId: selectedUser.id },
+                  })
+                }
               />
             )}
           </div>
         ) : (
-          selectedUser && selectedUser.imageName && (
+          selectedUser &&
+          selectedUser.imageName && (
             <img
-              src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${selectedUser.imageName}`}
+              src={`${import.meta.env.VITE_BACKEND_URL}/api/users/image/${
+                selectedUser.imageName
+              }`}
               alt="SeeAllUserIcon"
               style={{
                 position: "absolute",
@@ -275,7 +328,12 @@ import "./App.css";
               <h1>Update Data</h1>
               <div className="Form">
                 <div className="FormChildContainer">
-                  <form className="UpdateForm" onSubmit={(e) => { e.preventDefault(); updateUser(selectedUser.id); }}>
+                  <form
+                    className="UpdateForm"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      updateUser(selectedUser.id);
+                    }}>
                     {labels.map((label) => {
                       const isFocused = editFormData[label] ? "focused" : "";
                       return (
@@ -283,7 +341,8 @@ import "./App.css";
                           {inputTypes[label] === "radio" ? (
                             <div className="FormRadio">
                               <label>
-                                {label.charAt(0).toUpperCase() + label.slice(1)}:
+                                {label.charAt(0).toUpperCase() + label.slice(1)}
+                                :
                               </label>
                               <div className="OutRadioInput">
                                 {genderOptions.map((value, index) => (
@@ -302,7 +361,13 @@ import "./App.css";
                             </div>
                           ) : inputTypes[label] === "file" ? (
                             <div className="FormFile">
-                              <label htmlFor={label} className="Label" style={{visibility: "hidden", marginTop: "10px"}}>
+                              <label
+                                htmlFor={label}
+                                className="Label"
+                                style={{
+                                  visibility: "hidden",
+                                  marginTop: "10px",
+                                }}>
                                 {label.charAt(0).toUpperCase() + label.slice(1)}
                               </label>
                               <input
@@ -311,6 +376,61 @@ import "./App.css";
                                 accept="image/png, image/jpeg"
                                 className="FormInputFile"
                                 onChange={handleInputChange}
+                              />
+                            </div>
+                          ) : inputTypes[label] === "password" ? (
+                            <div
+                              className={`FormParentt ${isFocused}`}
+                              style={{
+                                position: "relative",
+                                display: "flex",
+                                alignItems: "center",
+                              }}>
+                              <label htmlFor={label} className="Label">
+                                {label.charAt(0).toUpperCase() + label.slice(1)}
+                              </label>
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                name={label}
+                                className="FormInput"
+                                value={editFormData[label]}
+                                onChange={handleInputChange}
+                                onFocus={(e) =>
+                                  e.target.parentNode.classList.add("focused")
+                                }
+                                onBlur={(e) => {
+                                  if (!e.target.value) {
+                                    e.target.parentNode.classList.remove(
+                                      "focused"
+                                    );
+                                  }
+                                }}
+                                onKeyDown={
+                                  inputTypes[label] === "number"
+                                    ? handleKeyPress
+                                    : undefined
+                                }
+                                inputMode={
+                                  inputTypes[label] === "number"
+                                    ? "numeric"
+                                    : undefined
+                                }
+                                pattern={
+                                  inputTypes[label] === "number"
+                                    ? "\\d*"
+                                    : undefined
+                                }
+                              />
+                              <img
+                                src={showPassword ? ClosedEye : OpenedEye}
+                                alt=""
+                                style={{
+                                  position: "absolute",
+                                  height: "15px",
+                                  right: "10px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={togglePasswordVisibility}
                               />
                             </div>
                           ) : (
@@ -364,13 +484,15 @@ import "./App.css";
             </div>
           ) : (
             <div className="UserDataDiv">
-              <div className="UserData">  
+              <div className="UserData">
                 <p>First Name: {selectedUser.firstName}</p>
                 <p>Last Name: {selectedUser.lastName}</p>
                 <p>Age: {selectedUser.age}</p>
                 <p>Phone: {selectedUser.phone}</p>
                 <p>Gender: {selectedUser.gender}</p>
-                <button className="DeleteBtn" onClick={() => deleteUser(selectedUser.id)}>
+                <button
+                  className="DeleteBtn"
+                  onClick={() => deleteUser(selectedUser.id)}>
                   Delete
                 </button>
                 <button className="UpdateBtn" onClick={handleUpdate}>
@@ -387,7 +509,10 @@ import "./App.css";
       <div className={`usersParent ${isUsersVisible ? "visible" : "hidden"}`}>
         {allUsers.length > 0 ? (
           allUsers.map((user, index) => (
-            <div className="Users" key={index} onClick={() => viewFromAllUser(user)}>
+            <div
+              className="Users"
+              key={index}
+              onClick={() => viewFromAllUser(user)}>
               <p>Id: {user.id}</p>
               <p>First Name: {user.firstName}</p>
               <p>Last Name: {user.lastName}</p>

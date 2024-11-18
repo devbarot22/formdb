@@ -14,7 +14,7 @@ export default function DisplayTable() {
   const location = useLocation();
   const { selectedUserId } = location.state || {};
 
-  const labels = ["firstName", "lastName", "age", "phone", "gender", "imageName"];
+  const labels = ["id","firstName", "lastName", "age", "phone", "gender", "imageName"];
 
   const getBackFromTable = () => {
     navigate(`/user-data/${selectedUserId}`);

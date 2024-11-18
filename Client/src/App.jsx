@@ -9,14 +9,25 @@ import "./App.css";
 import UserData from "./UserData";
 import DisplayTable from "./DisplayTable";
 import axios from "axios";
+import ClosedEye from "./public/icons8-closed-eye-96.png";
+import OpenedEye from "./public/icons8-eye-96.png";
 
 export default function App() {
-  const labels = ["firstName", "lastName", "age", "phone", "gender", "image"];
+  const labels = [
+    "firstName",
+    "lastName",
+    "age",
+    "phone",
+    "password",
+    "gender",
+    "image",
+  ];
   const inputTypes = {
     firstName: "text",
     lastName: "text",
     age: "number",
     phone: "number",
+    password: "password",
     gender: "radio",
     image: "file",
   };
@@ -26,6 +37,7 @@ export default function App() {
     lastName: "",
     age: "",
     phone: "",
+    password: "",
     gender: "",
     image: null,
   };
@@ -36,7 +48,24 @@ export default function App() {
   const [user, setUser] = useState({});
   const [formData, setFormData] = useState(initialFormData);
   const [image, setImage] = useState(formData.image);
-  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState({
+    errors:{},
+    isError: false,
+  });
+
+  /**
+   * Handles changes to form inputs and updates the form data state.
+   *
+   * If the input is a file input (name === "image"), it updates the "image" field
+   * with the first selected file. For all other inputs, it updates the corresponding
+   * field in the form data based on the input's name and value.
+   *
+   * @param {Object} event - The event object from the input field.
+   * @param {string} event.target.name - The name of the input field.
+   * @param {string} event.target.value - The value of the input field (for text inputs).
+   * @param {FileList} event.target.files - The list of files (for file inputs).
+   */
 
   const handleChange = (event) => {
     const { name, value, files } = event.target;
@@ -53,6 +82,10 @@ export default function App() {
     }
   };
 
+  /*--------------------------------------------- handleKeyPress Function --------------------------------------*/
+
+  /*this function is used to prevent user to enter characters inside phone field and age field which should be populated with numbers only*/
+
   const handleKeyPress = (event) => {
     const charCode = event.keyCode;
     if (
@@ -66,53 +99,59 @@ export default function App() {
     }
   };
 
+  /*--------------------------------------------- Handle Submit Function --------------------------------------*/
+  /* this function send is called inside form's onsubmit method where this function will take its child function to be called with it which is postMethod */
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     postMethod(formData);
   };
 
-  // Creating function to post data on server
+  /*--------------------------------------------- PostMethod Function --------------------------------------*/
+
+  /* this function sends formdata to the backend along with uploadPostImage function(which basically sends the image to the backend) and will check if we have image with us then only the uploadImage function will be called and it will upload image with it*/
+
+  /*Once we are able to send the data(without facing any error) to the server it will navigate us to the UserData page where we will display it along with other functionalities and elements for more info checkout UserData component */
+
   const postMethod = (data) => {
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/api/users/createUser`, data)
       .then((response) => {
         const data = response.data;
-        console.log(formData.image);
+
+        /*checking for formdata image value if its not null it will proceed to submit it along with all data */
+
         if (formData.image) {
           uploadPostImage(formData.image, data.id)
-            .then(() => {
-              console.log(formData.image);
-              console.log("SUbmitting form data!");
-            })
+
+            /*this catch block will catch any error which will occur during the submission of our image*/
+
             .catch((error) => {
               console.log("Error in Uploading Image !! ");
               console.error(error);
-              // console.log(error.response.data);
             });
         }
 
-        console.log("At the navigate");
-
-        if (!errors.isError) {
-          console.log(
-            "User Registered Successfully! User ID: " + response.data.id
-          );
+        /*If there is no error it will console the response data id and it will navigate to the UserData component and it will empty the fields*/
+        if (!error.isError) {
+          setError({}); 
           navigate(`user-data/${response.data.id}`, {
             state: { labels, formData: data },
           });
-          console.log("Navigated to user-data");
-
           setUser({});
           setFormData(initialFormData);
         }
       })
+
+      /*this will catch any error we will encounter during the submission of our data */
+
       .catch((error) => {
         console.log("Error! Something went wrong");
         console.log(error);
 
         if (error.response && error.response.data) {
-          setErrors({
+          setError({
             errors: error.response.data,
             isError: true,
           });
@@ -120,7 +159,12 @@ export default function App() {
       });
   };
 
+  /*----------------------------------------------- Upload image function -----------------------------------------*/
+  /*this function basically post and its been called inside the postMethod and this method will send the post request to the backend to store the image*/
+
   const uploadPostImage = async (image, id) => {
+    /*storing creating new object called formData and appending image with key 'image', And returning the response data we will get.*/
+
     let formData = new FormData();
     formData.append("image", image);
 
@@ -129,6 +173,10 @@ export default function App() {
       formData
     );
     return response.data;
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -144,6 +192,9 @@ export default function App() {
                   const isFocused = formData[label] ? "focused" : "";
                   return (
                     <div className="FormChild" key={label}>
+                      {/*-------------------------------------------------- Radio Field ---------------------------------------------*/}
+                      {/* this field has radio field */}
+
                       {inputTypes[label] === "radio" ? (
                         <div className="FormRadio">
                           <label>
@@ -163,11 +214,15 @@ export default function App() {
                               </label>
                             ))}
                           </div>
-                          {errors[label] && (
-                            <div className="error">{errors[label]}</div>
+                          {error[label] && (
+                            <div className="error">{error[label]}</div>
                           )}
                         </div>
-                      ) : inputTypes[label] === "file" ? (
+                      ) : /*--------------------------------------------------- file Field ------------------------------------------------*/
+
+                      /*this is the file field */
+
+                      inputTypes[label] === "file" ? (
                         <div className="FormFile">
                           <label
                             htmlFor={label}
@@ -182,11 +237,70 @@ export default function App() {
                             className="FormInputFile"
                             onChange={handleChange}
                           />
-                          {errors[label] && (
-                            <div className="error">{errors[label]}</div>
+                          {error[label] && (
+                            <div className="error">{error[label]}</div>
                           )}
                         </div>
+                      ) : /*-------------------------------------------------- Password Field ----------------------------------------------*/
+                      //this is the password field
+
+                      inputTypes[label] === "password" ? (
+                        <div
+                          className={`FormParentt ${isFocused}`}
+                          style={{
+                            position: "relative",
+                            display: "flex",
+                            alignItems: "center",
+                          }}>
+                          <label htmlFor={label} className="Label">
+                            {label.charAt(0).toUpperCase() + label.slice(1)}
+                          </label>
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            name={label}
+                            className="FormInput"
+                            value={formData[label]}
+                            onChange={handleChange}
+                            onFocus={(e) =>
+                              e.target.parentNode.classList.add("focused")
+                            }
+                            onBlur={(e) => {
+                              if (!e.target.value) {
+                                e.target.parentNode.classList.remove("focused");
+                              }
+                            }}
+                            onKeyDown={
+                              inputTypes[label] === "number"
+                                ? handleKeyPress
+                                : undefined
+                            }
+                            inputMode={
+                              inputTypes[label] === "number"
+                                ? "numeric"
+                                : undefined
+                            }
+                            pattern={
+                              inputTypes[label] === "number"
+                                ? "\\d*"
+                                : undefined
+                            }
+                          />
+                          <img
+                            src={showPassword ? ClosedEye : OpenedEye}
+                            alt=""
+                            style={{
+                              position: "absolute",
+                              height: "15px",
+                              right: "10px",
+                              cursor: "pointer",
+                            }}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </div>
                       ) : (
+                        /*--------------------------------------------------- All Fields ---------------------------------------------*/
+                        //this are all the fields which have text,number.
+
                         <div className={`FormParentt ${isFocused}`}>
                           <label htmlFor={label} className="Label">
                             {label.charAt(0).toUpperCase() + label.slice(1)}
@@ -222,8 +336,8 @@ export default function App() {
                             }
                           />
                           <div className="error-container">
-                            {errors[label] && (
-                              <div className="error">{errors[label]}</div>
+                            {error[label] && (
+                              <div className="error">{error[label]}</div>
                             )}
                           </div>
                         </div>
