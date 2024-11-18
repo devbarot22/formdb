@@ -2,6 +2,7 @@ package com.example.form.controller;
 
 import com.example.form.ExceptionHandler.ApiResponse;
 import com.example.form.Utils.ImageValidator;
+import com.example.form.config.AppConstants;
 import com.example.form.model.UserDto;
 import com.example.form.payloads.PostResponse;
 import com.example.form.service.FileService;
@@ -48,10 +49,10 @@ public class UserController {
     //This method is created to get all users the database users
     @GetMapping("/all-users-paging")
     public ResponseEntity<PostResponse> getAllUsers(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value= "sortOrder", defaultValue = "asc", required = false) String sortOrder
+            @RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value= "sortOrder", defaultValue = AppConstants.SORT_ORDER, required = false) String sortOrder
     ) {
 
         PostResponse postResponse = this.userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
