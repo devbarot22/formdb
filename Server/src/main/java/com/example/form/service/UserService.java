@@ -11,8 +11,8 @@ public interface UserService {
     UserDto saveUser(UserDto user);
     PostResponse getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
     List<UserDto> getAllUsersData();
-    UserDto getUserById(Long id);
-    UserDto updateUser(UserDto user, Long id);
+    UserDto getUserById(Integer id);
+    UserDto updateUser(UserDto user, Integer id);
 //    List<UserDto> searchUser(String keyword);
 
 }

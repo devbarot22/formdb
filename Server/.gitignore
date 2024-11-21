@@ -34,7 +34,7 @@ local.properties
 *.launch
 
 #Image Folder
-images
+/images
 
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject

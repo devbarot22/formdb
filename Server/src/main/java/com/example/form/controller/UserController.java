@@ -52,7 +52,7 @@ public class UserController {
             @RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
-            @RequestParam(value= "sortOrder", defaultValue = AppConstants.SORT_ORDER, required = false) String sortOrder
+            @RequestParam(value = "sortOrder", defaultValue = AppConstants.SORT_ORDER, required = false) String sortOrder
     ) {
 
         PostResponse postResponse = this.userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/all-users")
-    public ResponseEntity<List<UserDto>> getAllUserData(){
+    public ResponseEntity<List<UserDto>> getAllUserData() {
         List<UserDto> userDto = this.userService.getAllUsersData();
 
         return new ResponseEntity<List<UserDto>>(userDto, OK);
@@ -69,13 +69,13 @@ public class UserController {
     //This method is created to get user by its id
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(this.userService.getUserById(id));
+        return ResponseEntity.ok(this.userService.getUserById(Math.toIntExact(id)));
     }
 
     //This method is created to let user update the user id
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@Valid @PathVariable("id") Long id, @RequestBody UserDto userUp) {
-        UserDto updatedUser = this.userService.updateUser(userUp, id);
+        UserDto updatedUser = this.userService.updateUser(userUp, Math.toIntExact(id));
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -97,12 +97,7 @@ public class UserController {
 //    }
 
 
-
 //    ----------------------------------------Image CRUD------------------------------------------------
-
-
-
-
 
 
     //    post image upload
@@ -114,11 +109,11 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse("Invalid image file: only JPG, PNG allowed and size should be under 2 MB", false), HttpStatus.BAD_REQUEST);
         }
 
-        UserDto userDto = this.userService.getUserById(id);
+        UserDto userDto = this.userService.getUserById((int) id);
 
         String fileName = this.fileService.uploadImage(path, image);
         userDto.setImageName(fileName);
-        UserDto updatedUser = this.userService.updateUser(userDto, id);
+        UserDto updatedUser = this.userService.updateUser(userDto, (int) id);
         return new ResponseEntity<>(updatedUser, OK);
     }
 
@@ -140,9 +135,8 @@ public class UserController {
         if (!ImageValidator.isValidImage(image)) {
             return new ResponseEntity<>(new ApiResponse("Invalid image file: only JPG, PNG allowed and size should be under 2 MB", false), HttpStatus.BAD_REQUEST);
         }
-
         // Fetch the existing user by id
-        UserDto userDto = this.userService.getUserById(id);
+        UserDto userDto = this.userService.getUserById((int) id);
 
         // Get the name of the existing image file to be replaced
         String existingFileName = userDto.getImageName();
@@ -154,15 +148,50 @@ public class UserController {
         userDto.setImageName(updatedFileName);
 
         // Save the updated user information
-        UserDto updatedUser = this.userService.updateUser(userDto, id);
+        UserDto updatedUser = this.userService.updateUser(userDto, (int) id);
 
         // Return the updated user information
         return new ResponseEntity<>(updatedUser, OK);
     }
 
     //    Method to delete file
+//    @DeleteMapping("/image/delete/{id}")
+//    public ResponseEntity<ApiResponse> deleteUserImage(@PathVariable("id") long id) throws IOException {
+//        // Fetch the user by id to get the image name
+//        UserDto userDto = this.userService.getUserById(id);
+//
+//        // Get the name of the existing image file
+//        String fileName = userDto.getImageName();
+//
+//        if (fileName != null && !fileName.isEmpty()) {
+//            // Delete the image file using the FileService
+//            try {
+//                System.out.println("Deleting image");
+//
+//                this.fileService.deleteImage(path, fileName);
+//                System.out.println("Deleted image");
+//
+//                // Set the image name in the user DTO to null or empty
+//                userDto.setImageName(null);
+//
+//                // Update the user to remove the image reference
+//                this.userService.updateUser(userDto, id);
+//
+//                // Return a response indicating success
+//                return new ResponseEntity<>(new ApiResponse("User image deleted successfully", true), OK);
+//            } catch (IOException e) {
+//                System.err.println("Failed to delete the image: " + e.getMessage());
+//                return new ResponseEntity<>(new ApiResponse("Failed to delete the image", false), HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        } else {
+//            // Return a response indicating failed
+//            return new ResponseEntity<>(new ApiResponse("No image found for this user", false), HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+
     @DeleteMapping("/image/delete/{id}")
-    public ResponseEntity<ApiResponse> deleteUserImage(@PathVariable("id") long id) throws IOException {
+    public ResponseEntity<ApiResponse> deleteUserImage(@PathVariable("id") Integer id) throws IOException {
 
         // Fetch the user by id to get the image name
         UserDto userDto = this.userService.getUserById(id);
@@ -182,12 +211,11 @@ public class UserController {
             this.userService.updateUser(userDto, id);
 
             // Return a response indicating success
-            return new ResponseEntity<>(new ApiResponse("User image deleted successfully", true), OK);
+            return new ResponseEntity<>(new ApiResponse("User image deleted successfully", true), HttpStatus.OK);
         } else {
 
             // Return a response indicating failed
             return new ResponseEntity<>(new ApiResponse("No image found for this user", false), HttpStatus.NOT_FOUND);
         }
     }
-
 }
