@@ -8,6 +8,7 @@ import TableView from "./public/table-column-solid-svgrepo-com.svg";
 import ClosedEye from "./public/icons8-closed-eye-96.png";
 import OpenedEye from "./public/icons8-eye-96.png";
 import "./SignUp.css";
+import axios from "axios";
 
 function UserData() {
   const location = useLocation();
@@ -23,7 +24,7 @@ function UserData() {
   const [imageName, setImageName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const labels = ["name", "userName", "email","image"];
+  const labels = ["name", "userName", "email", "image"];
   const inputTypes = {
     name: "text",
     userName: "text",
@@ -33,21 +34,10 @@ function UserData() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setAllUsers(data);
-        if (data.length === 0) {
-          navigate("/");
-        }
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/all-users`);
+      setAllUsers(response.data);
+      if (response.data.length === 0) {
+        navigate("/");
       }
     } catch (e) {
       console.error(e);
@@ -56,35 +46,38 @@ function UserData() {
 
   const fetchUserById = async (userId) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setSelectedUser(data);
-      } else {
-        console.error(`Failed to fetch user. Status: ${response.status}`);
-      }
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`);
+      setSelectedUser(response.data);
+      setImageName(response.data.imageName || "");
     } catch (e) {
-      console.error(e);
+      console.error(`Failed to fetch user. Status: ${e.response.status}`);
     }
   };
 
+  const deleteUserImage = async (userId) => {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/users/image/delete/${userId}`);
+      if (!response.data.success) {
+        console.error(`Failed to delete user image. Message: ${response.data.message}`);
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Error:", error);
+      return false;
+    }
+  };
+
+
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
+      const imageDeleted = await deleteUserImage(userId);
+      if (!imageDeleted) {
+        console.error("Failed to delete user image. Aborting user deletion.");
+        return;
+      }
+      const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`);
+      if (response.status === 200) {
         const updatedUsers = allUsers.filter((user) => user.id !== userId);
         setAllUsers(updatedUsers);
         if (updatedUsers.length > 0) {
@@ -96,9 +89,10 @@ function UserData() {
         console.error(`Failed to delete user. Status: ${response.status}`);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
     }
   };
+
 
   const handleUpdate = () => {
     setIsEditing(true);
