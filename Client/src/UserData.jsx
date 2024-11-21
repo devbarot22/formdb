@@ -7,7 +7,7 @@ import CrossSvg from "./public/cross-svgrepo-com.svg";
 import TableView from "./public/table-column-solid-svgrepo-com.svg";
 import ClosedEye from "./public/icons8-closed-eye-96.png";
 import OpenedEye from "./public/icons8-eye-96.png";
-import "./App.css";
+import "./SignUp.css";
 
 function UserData() {
   const location = useLocation();
@@ -23,26 +23,13 @@ function UserData() {
   const [imageName, setImageName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const labels = [
-    "firstName",
-    "lastName",
-    "age",
-    "phone",
-    "password",
-    "gender",
-    "image",
-  ];
+  const labels = ["name", "userName", "email","image"];
   const inputTypes = {
-    firstName: "text",
-    lastName: "text",
-    age: "number",
-    phone: "number",
-    password: "password",
-    gender: "radio",
+    name: "text",
+    userName: "text",
+    email: "email",
     image: "file",
   };
-
-  const genderOptions = ["Male", "Female", "Others"];
 
   const fetchData = async () => {
     try {
@@ -229,7 +216,6 @@ function UserData() {
     navigate(`/user-data/${user.id}`, { replace: true });
   };
 
-  
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
@@ -338,28 +324,7 @@ function UserData() {
                       const isFocused = editFormData[label] ? "focused" : "";
                       return (
                         <div className="FormChild" key={label}>
-                          {inputTypes[label] === "radio" ? (
-                            <div className="FormRadio">
-                              <label>
-                                {label.charAt(0).toUpperCase() + label.slice(1)}
-                                :
-                              </label>
-                              <div className="OutRadioInput">
-                                {genderOptions.map((value, index) => (
-                                  <label key={index}>
-                                    <input
-                                      type="radio"
-                                      name={label}
-                                      value={value}
-                                      checked={editFormData[label] === value}
-                                      onChange={handleInputChange}
-                                    />
-                                    {value}
-                                  </label>
-                                ))}
-                              </div>
-                            </div>
-                          ) : inputTypes[label] === "file" ? (
+                          {inputTypes[label] === "file" ? (
                             <div className="FormFile">
                               <label
                                 htmlFor={label}
@@ -485,11 +450,9 @@ function UserData() {
           ) : (
             <div className="UserDataDiv">
               <div className="UserData">
-                <p>First Name: {selectedUser.firstName}</p>
-                <p>Last Name: {selectedUser.lastName}</p>
-                <p>Age: {selectedUser.age}</p>
-                <p>Phone: {selectedUser.phone}</p>
-                <p>Gender: {selectedUser.gender}</p>
+                <p>Name: {selectedUser.name}</p>
+                <p>email: {selectedUser.email}</p>
+                <p>userName: {selectedUser.userName}</p>
                 <button
                   className="DeleteBtn"
                   onClick={() => deleteUser(selectedUser.id)}>
@@ -514,8 +477,8 @@ function UserData() {
               key={index}
               onClick={() => viewFromAllUser(user)}>
               <p>Id: {user.id}</p>
-              <p>First Name: {user.firstName}</p>
-              <p>Last Name: {user.lastName}</p>
+              <p>name: {user.name}</p>
+              <p>userName: {user.userName}</p>
             </div>
           ))
         ) : (
