@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-    @Service
+@Service
     public class FileServiceImpl implements FileService {
 
         @Override
@@ -91,65 +91,25 @@ import java.util.UUID;
 
 
 
-//        @Override
-//        public void deleteImage(String path, String fileName) throws IOException {
-//            // Construct the full path to the image file
-//            String filePath = path + File.separator + fileName;
-//
-//            // Create a File object
-//            File file = new File(filePath);
-//
-//            // Check if the file exists and delete it
-//            if (file.exists()) {
-//                if (file.delete()) {
-//                    System.out.println("Image deleted successfully.");
-//                } else {
-//                    throw new IOException("Failed to delete the image.");
-//                }
-//            } else {
-//                System.out.println("Image file not found.");
-//            }
-//        }
+    @Override
+    public void deleteImage(String path, String fileName) throws IOException {
+        // Construct the full path to the image file
+        String filePath = path + File.separator + fileName;
 
+        // Create a File object
+        File file = new File(filePath);
 
-        @Override
-        public void deleteImage(String path, String fileName) throws IOException {
-            // Resolve absolute file path
-            String filePath = new File(path, fileName).getAbsolutePath();
-            File file = new File(filePath);
-
-            // Debugging logs
-            System.out.println("Attempting to delete file: " + filePath);
-
-            // Ensure file exists
-            if (!file.exists()) {
-                System.out.println("Image file not found at path: " + filePath);
-                return;
+        // Check if the file exists and delete it
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("Image deleted successfully.");
+            } else {
+                throw new IOException("Failed to delete the image.");
             }
-
-            // Attempt deletion with retry logic to handle potential locks
-            int retryCount = 3;
-            while (retryCount > 0) {
-                boolean isDeleted = file.delete();
-
-                if (isDeleted) {
-                      System.out.println("Image deleted successfully: " + filePath);
-                    return; // Exit after successful deletion
-                } else {
-                    retryCount--;
-                    System.out.println("Failed to delete file. Retrying... Attempts left: " + retryCount);
-                    try {
-                        Thread.sleep(100); // Short wait before retrying
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt(); // Restore the interrupted status
-                        throw new IOException("Thread interrupted during retry", e);
-                    }
-                }
-            }
-
-            // If retries are exhausted, throw an exception
-            throw new IOException("Failed to delete the image file after multiple attempts: " + filePath);
+        } else {
+            System.out.println("Image file not found.");
         }
+    }
 
 
     }
